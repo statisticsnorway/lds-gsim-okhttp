@@ -5,7 +5,7 @@ steps:
 
 - name: authenticate
   image: robertstettner/drone-mvn-auth
-  pull: true
+  pull: always
   settings:
     servers:
       from_secret: maven_servers
