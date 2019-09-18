@@ -10,11 +10,13 @@ import okhttp3.Request;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.concurrent.CompletableFuture;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstanceVariable extends IdentifiableArtefact {
 
     public static final String INSTANCE_VARIABLE_NAME = "InstanceVariable";
+
     @JsonProperty
     private String shortName;
     @JsonProperty
@@ -28,7 +30,7 @@ public class InstanceVariable extends IdentifiableArtefact {
     @JsonProperty
     private String representedVariable;
     @JsonProperty
-    private String substantiveValueDomain;
+    private String sentinelValueDomain;
 
     public String getShortName() {
         return shortName;
@@ -78,13 +80,21 @@ public class InstanceVariable extends IdentifiableArtefact {
         this.representedVariable = representedVariable;
     }
 
-    public String getSubstantiveValueDomain() {
-        return substantiveValueDomain;
+    public String getSentinelValueDomain() {
+        return sentinelValueDomain;
     }
 
-    public void setSubstantiveValueDomain(String substantiveValueDomain) {
-        this.substantiveValueDomain = substantiveValueDomain;
+    public void setSentinelValueDomain(String sentinelValueDomain) {
+        this.sentinelValueDomain = sentinelValueDomain;
     }
+
+    public CompletableFuture<RepresentedVariable> fetchRepresentedVariable() {
+        RepresentedVariable.Fetcher fetcher = new RepresentedVariable.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.fetchAsync(getRepresentedVariable())
+                .thenApply(result -> (RepresentedVariable) result.withParametersFrom(this));
+    }
+
 
     static class Fetcher extends AbstractFetcher<InstanceVariable> {
         

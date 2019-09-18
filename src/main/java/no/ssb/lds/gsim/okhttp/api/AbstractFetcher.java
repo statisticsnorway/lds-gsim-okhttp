@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractFetcher<T> extends Configured implements Fetchable<T>, Updatable<T>, Deserializable<T>,
+public abstract class AbstractFetcher<T extends Configured> extends Configured implements Fetchable<T>, Updatable<T>, Deserializable<T>,
         Serializable<T>, Configurable {
 
     public static final String APPLICATION_JSON_STRING = "application/json; charset=utf-8";
@@ -33,7 +33,7 @@ public abstract class AbstractFetcher<T> extends Configured implements Fetchable
         Call call = getClient().newCall(request.build());
         FetcherCallback callback = new FetcherCallback();
         call.enqueue(callback);
-        return callback;
+        return callback.thenApplyAsync(t -> (T) t.withParametersFrom(this));
     }
 
     @Override

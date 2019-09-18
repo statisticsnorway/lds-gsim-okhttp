@@ -10,12 +10,16 @@ import okhttp3.Request;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LogicalRecord extends IdentifiableArtefact {
 
     public static final String LOGICAL_RECORD_NAME = "LogicalRecord";
+
     @JsonProperty
     private List<String> instanceVariables;
 
@@ -36,6 +40,24 @@ public class LogicalRecord extends IdentifiableArtefact {
 
     public void setInstanceVariables(List<String> instanceVariables) {
         this.instanceVariables = instanceVariables;
+    }
+
+    public CompletableFuture<List<InstanceVariable>> fetchInstanceVariables() {
+        if (getInstanceVariables().isEmpty()) {
+            return CompletableFuture.completedFuture(Collections.emptyList());
+        }
+        InstanceVariable.Fetcher fetcher = new InstanceVariable.Fetcher();
+        fetcher.withParametersFrom(this);
+
+        List<CompletableFuture<InstanceVariable>> fetches = getInstanceVariables().stream()
+                .map(fetcher::fetchAsync).collect(Collectors.toList());
+
+        return CompletableFuture.allOf(fetches.toArray(new CompletableFuture[0]))
+                .thenApply(aVoid -> fetches.stream()
+                        .map(CompletableFuture::join)
+                        .map(instanceVariable -> (InstanceVariable) instanceVariable.withParametersFrom(this))
+                        .collect(Collectors.toList())
+                );
     }
 
     static class Fetcher extends AbstractFetcher<LogicalRecord> {
