@@ -74,12 +74,17 @@ public class UnitDataStructure extends IdentifiableArtefact {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + UNIT_DATA_STRUCTURE_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override
         public byte[] serialize(ObjectMapper mapper, UnitDataStructure object) throws IOException {
-            return new byte[0];
+            return mapper.writeValueAsBytes(object);
         }
     }
 }

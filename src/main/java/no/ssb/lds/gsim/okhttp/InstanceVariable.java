@@ -96,7 +96,7 @@ public class InstanceVariable extends IdentifiableArtefact {
     }
 
 
-    static class Fetcher extends AbstractFetcher<InstanceVariable> {
+    public static class Fetcher extends AbstractFetcher<InstanceVariable> {
         
         @Override
         public InstanceVariable deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -119,12 +119,17 @@ public class InstanceVariable extends IdentifiableArtefact {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + INSTANCE_VARIABLE_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override
         public byte[] serialize(ObjectMapper mapper, InstanceVariable object) throws IOException {
-            return new byte[0];
+            return mapper.writeValueAsBytes(object);
         }
     }
 

@@ -50,11 +50,13 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     future.complete(null);
                 }
-                future.completeExceptionally(new IOException("http error: " + response.message()));
+                ResponseBody body = response.body();
+                String string = body != null ? body.string() : "body missing";
+                future.completeExceptionally(new IOException("http error: " + string));
             }
         });
         return future;
