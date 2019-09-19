@@ -82,7 +82,7 @@ public class DescribedValueDomain extends ValueDomain {
         this.maxDecimals = maxDecimals;
     }
 
-    static class Fetcher extends AbstractFetcher<DescribedValueDomain> {
+    public static class Fetcher extends AbstractFetcher<DescribedValueDomain> {
 
         @Override
         public DescribedValueDomain deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -105,7 +105,12 @@ public class DescribedValueDomain extends ValueDomain {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + DESCRIBED_VALUE_DOMAIN_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override
