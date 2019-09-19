@@ -45,7 +45,7 @@ public class RepresentedVariable extends IdentifiableArtefact {
         }
     }
 
-    static class Fetcher extends AbstractFetcher<RepresentedVariable> {
+    public static class Fetcher extends AbstractFetcher<RepresentedVariable> {
 
         @Override
         public RepresentedVariable deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -68,7 +68,12 @@ public class RepresentedVariable extends IdentifiableArtefact {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + REPRESENTED_VARIABLE_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override

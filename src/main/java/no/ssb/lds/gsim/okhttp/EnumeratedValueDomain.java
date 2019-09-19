@@ -27,7 +27,7 @@ public class EnumeratedValueDomain extends ValueDomain {
         this.klassUrl = klassUrl;
     }
 
-    static class Fetcher extends AbstractFetcher<EnumeratedValueDomain> {
+    public static class Fetcher extends AbstractFetcher<EnumeratedValueDomain> {
 
         @Override
         public EnumeratedValueDomain deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -50,7 +50,12 @@ public class EnumeratedValueDomain extends ValueDomain {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + ENUMERATED_VALUE_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override

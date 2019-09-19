@@ -24,9 +24,9 @@ public class InstanceVariable extends IdentifiableArtefact {
     @JsonProperty
     private String dataStructureComponentType;
     @JsonProperty
-    private String identifierComponentIsComposite;
+    private boolean identifierComponentIsComposite;
     @JsonProperty
-    private String identifierComponentIsUnique;
+    private boolean identifierComponentIsUnique;
     @JsonProperty
     private String representedVariable;
     @JsonProperty
@@ -56,19 +56,19 @@ public class InstanceVariable extends IdentifiableArtefact {
         this.dataStructureComponentType = dataStructureComponentType;
     }
 
-    public String getIdentifierComponentIsComposite() {
+    public boolean getIdentifierComponentIsComposite() {
         return identifierComponentIsComposite;
     }
 
-    public void setIdentifierComponentIsComposite(String identifierComponentIsComposite) {
+    public void setIdentifierComponentIsComposite(boolean identifierComponentIsComposite) {
         this.identifierComponentIsComposite = identifierComponentIsComposite;
     }
 
-    public String getIdentifierComponentIsUnique() {
+    public boolean getIdentifierComponentIsUnique() {
         return identifierComponentIsUnique;
     }
 
-    public void setIdentifierComponentIsUnique(String identifierComponentIsUnique) {
+    public void setIdentifierComponentIsUnique(boolean identifierComponentIsUnique) {
         this.identifierComponentIsUnique = identifierComponentIsUnique;
     }
 
