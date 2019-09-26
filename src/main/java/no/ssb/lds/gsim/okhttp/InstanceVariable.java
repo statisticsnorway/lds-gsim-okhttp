@@ -24,9 +24,9 @@ public class InstanceVariable extends IdentifiableArtefact {
     @JsonProperty
     private String dataStructureComponentType;
     @JsonProperty
-    private String identifierComponentIsComposite;
+    private boolean identifierComponentIsComposite;
     @JsonProperty
-    private String identifierComponentIsUnique;
+    private boolean identifierComponentIsUnique;
     @JsonProperty
     private String representedVariable;
     @JsonProperty
@@ -56,19 +56,19 @@ public class InstanceVariable extends IdentifiableArtefact {
         this.dataStructureComponentType = dataStructureComponentType;
     }
 
-    public String getIdentifierComponentIsComposite() {
+    public boolean getIdentifierComponentIsComposite() {
         return identifierComponentIsComposite;
     }
 
-    public void setIdentifierComponentIsComposite(String identifierComponentIsComposite) {
+    public void setIdentifierComponentIsComposite(boolean identifierComponentIsComposite) {
         this.identifierComponentIsComposite = identifierComponentIsComposite;
     }
 
-    public String getIdentifierComponentIsUnique() {
+    public boolean getIdentifierComponentIsUnique() {
         return identifierComponentIsUnique;
     }
 
-    public void setIdentifierComponentIsUnique(String identifierComponentIsUnique) {
+    public void setIdentifierComponentIsUnique(boolean identifierComponentIsUnique) {
         this.identifierComponentIsUnique = identifierComponentIsUnique;
     }
 
@@ -96,7 +96,7 @@ public class InstanceVariable extends IdentifiableArtefact {
     }
 
 
-    static class Fetcher extends AbstractFetcher<InstanceVariable> {
+    public static class Fetcher extends AbstractFetcher<InstanceVariable> {
         
         @Override
         public InstanceVariable deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -119,12 +119,17 @@ public class InstanceVariable extends IdentifiableArtefact {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + INSTANCE_VARIABLE_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override
         public byte[] serialize(ObjectMapper mapper, InstanceVariable object) throws IOException {
-            return new byte[0];
+            return mapper.writeValueAsBytes(object);
         }
     }
 

@@ -60,7 +60,7 @@ public class LogicalRecord extends IdentifiableArtefact {
                 );
     }
 
-    static class Fetcher extends AbstractFetcher<LogicalRecord> {
+    public static class Fetcher extends AbstractFetcher<LogicalRecord> {
 
         @Override
         public LogicalRecord deserialize(ObjectMapper mapper, InputStream bytes) throws IOException {
@@ -83,12 +83,17 @@ public class LogicalRecord extends IdentifiableArtefact {
 
         @Override
         public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
-            return null;
+            Request.Builder builder = new Request.Builder();
+            HttpUrl url = prefix.resolve("./" + LOGICAL_RECORD_NAME + "/" + id);
+            if (url == null) {
+                throw new RuntimeException(new MalformedURLException());
+            }
+            return builder.url(url);
         }
 
         @Override
         public byte[] serialize(ObjectMapper mapper, LogicalRecord object) throws IOException {
-            return new byte[0];
+            return mapper.writeValueAsBytes(object);
         }
     }
 }
