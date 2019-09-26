@@ -25,13 +25,9 @@ steps:
   commands:
   - mvn clean deploy -P ssb-bip, -DskipTests=true --batch-mode --global-settings settings.xml
   when:
-    event:
-      exclude:
-      - pull_request
-    branch:
-    - master
-    - develop
-
+    ref:
+      - refs/heads/develop
+      - refs/tags/*
 - name: slack
   image: plugins/slack
   settings:
