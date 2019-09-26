@@ -28,6 +28,7 @@ steps:
     ref:
       - refs/heads/develop
       - refs/tags/*
+
 - name: slack
   image: plugins/slack
   settings:
