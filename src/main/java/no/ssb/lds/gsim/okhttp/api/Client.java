@@ -1,6 +1,9 @@
 package no.ssb.lds.gsim.okhttp.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ssb.lds.gsim.okhttp.InstanceVariable;
+import no.ssb.lds.gsim.okhttp.LogicalRecord;
+import no.ssb.lds.gsim.okhttp.UnitDataStructure;
 import no.ssb.lds.gsim.okhttp.UnitDataset;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -21,6 +24,24 @@ public class Client extends Configured {
         UnitDataset.Fetcher fetcher = new UnitDataset.Fetcher();
         fetcher.withParametersFrom(this);
         return fetcher.updateAsync(id, dataset);
+    }
+
+    public CompletableFuture<Void> updateUnitDataStructure(String id, UnitDataStructure dataset) throws IOException {
+        UnitDataStructure.Fetcher fetcher = new UnitDataStructure.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, dataset);
+    }
+
+    public CompletableFuture<Void> updateLogicalRecord(String id, LogicalRecord logicalRecord) throws IOException {
+        LogicalRecord.Fetcher fetcher = new LogicalRecord.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, logicalRecord);
+    }
+
+    public CompletableFuture<Void> updateInstanceVariable(String id, InstanceVariable instanceVariable) throws IOException {
+        InstanceVariable.Fetcher fetcher = new InstanceVariable.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, instanceVariable);
     }
 
     @Override
