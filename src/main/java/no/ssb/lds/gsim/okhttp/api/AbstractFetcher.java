@@ -2,6 +2,7 @@ package no.ssb.lds.gsim.okhttp.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
+import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +39,11 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
 
     @Override
     public CompletableFuture<Void> updateAsync(String id, T object) throws IOException {
-        byte[] bytes = serialize(getMapper(), object);
+        ByteString content = ByteString.of(serialize(getMapper(), object));
         Request.Builder updateRequest = getUpdateRequest(getPrefix(), id);
-        updateRequest.put(RequestBody.create(APPLICATION_JSON, bytes));
+
+
+        updateRequest.put(RequestBody.create(content, APPLICATION_JSON));
         Call call = getClient().newCall(updateRequest.build());
         CompletableFuture<Void> future = new CompletableFuture<>();
         call.enqueue(new Callback() {
