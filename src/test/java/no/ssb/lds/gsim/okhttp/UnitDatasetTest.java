@@ -59,7 +59,4 @@ public class UnitDatasetTest {
         System.out.println(s);
     }
 
-    @Test
-    public void testSerialize() {
-    }
 }
