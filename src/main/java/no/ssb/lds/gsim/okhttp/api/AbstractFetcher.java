@@ -30,12 +30,19 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
 
     @Override
     public CompletableFuture<T> fetchAsync(String id, Long timestamp) {
-        Request.Builder request = getFetchRequest(getPrefix(), id, getTimestamp());
-        request.header("Accept", APPLICATION_JSON_STRING);
-        Call call = getClient().newCall(request.build());
-        FetcherCallback callback = new FetcherCallback();
-        call.enqueue(callback);
-        return callback.thenApplyAsync(t -> (T) t.withParametersFrom(this));
+        try {
+            Request.Builder request = getFetchRequest(getPrefix(), id, getTimestamp());
+            request.header("Accept", APPLICATION_JSON_STRING);
+            Call call = getClient().newCall(request.build());
+            FetcherCallback callback = new FetcherCallback();
+            call.enqueue(callback);
+            return callback.thenApplyAsync(t -> (T) t.withParametersFrom(this));
+        } catch (IOException e) {
+            // Need to use java < 9 API here.
+            CompletableFuture<T> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
+        }
     }
 
     @Override
