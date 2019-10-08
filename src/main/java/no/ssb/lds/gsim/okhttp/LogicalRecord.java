@@ -68,25 +68,25 @@ public class LogicalRecord extends IdentifiableArtefact {
         }
 
         @Override
-        public Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp) {
-            String normalizedId = id.replaceAll(LOGICAL_RECORD_NAME + "/", "");
+        public Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp) throws IOException {
+            String normalizedId = id.replace(LOGICAL_RECORD_NAME + "/", "");
             if (normalizedId.startsWith("/")) {
                 normalizedId = normalizedId.substring(1);
             }
             HttpUrl url = prefix.resolve("./" + LOGICAL_RECORD_NAME + "/" + normalizedId);
             if (url == null) {
-                throw new RuntimeException(new MalformedURLException());
+                throw new MalformedURLException();
             }
             Request.Builder builder = new Request.Builder();
             return builder.url(url);
         }
 
         @Override
-        public Request.Builder getUpdateRequest(HttpUrl prefix, String id) {
+        public Request.Builder getUpdateRequest(HttpUrl prefix, String id) throws IOException {
             Request.Builder builder = new Request.Builder();
             HttpUrl url = prefix.resolve("./" + LOGICAL_RECORD_NAME + "/" + id);
             if (url == null) {
-                throw new RuntimeException(new MalformedURLException());
+                throw new MalformedURLException();
             }
             return builder.url(url);
         }

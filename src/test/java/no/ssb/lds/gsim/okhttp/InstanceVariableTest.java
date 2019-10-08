@@ -50,8 +50,4 @@ public class InstanceVariableTest {
         String s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(instanceVariable);
         System.out.println(s);
     }
-
-    @Test
-    public void testSerialize() {
-    }
 }

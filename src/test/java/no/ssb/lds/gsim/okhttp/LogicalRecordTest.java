@@ -55,8 +55,4 @@ public class LogicalRecordTest {
         String s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(logicalRecord);
         System.out.println(s);
     }
-
-    @Test
-    public void testSerialize() {
-    }
 }

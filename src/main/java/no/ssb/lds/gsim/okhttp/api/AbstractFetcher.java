@@ -3,6 +3,7 @@ package no.ssb.lds.gsim.okhttp.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import okio.ByteString;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
 
     public static final String APPLICATION_JSON_STRING = "application/json; charset=utf-8";
     public static final MediaType APPLICATION_JSON = MediaType.parse(APPLICATION_JSON_STRING);
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractFetcher.class);
 
     @Override
     public T fetch(String id) {
@@ -65,27 +66,23 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
         return future;
     }
 
-    private T deserialize(InputStream bytes) throws IOException {
-        return deserialize(getMapper(), bytes);
-    }
-
     @Override
     public abstract T deserialize(ObjectMapper mapper, InputStream bytes) throws IOException;
 
-    public abstract Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp);
+    public abstract Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp) throws IOException;
 
-    public abstract Request.Builder getUpdateRequest(HttpUrl prefix, String id);
+    public abstract Request.Builder getUpdateRequest(HttpUrl prefix, String id) throws IOException;
 
 
     private final class FetcherCallback extends CompletableFuture<T> implements Callback {
 
         @Override
-        public void onFailure(Call call, IOException e) {
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
             this.completeExceptionally(e);
         }
 
         @Override
-        public void onResponse(Call call, Response response) {
+        public void onResponse(@NotNull Call call, @NotNull Response response) {
             try {
                 if (!response.isSuccessful()) {
                     throw new IOException("http error: " + response.message());
@@ -94,8 +91,8 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
                 if (body == null) {
                     throw new IOException("empty body");
                 }
-                this.complete(deserialize(response.body().byteStream()));
-            } catch (Throwable e) {
+                this.complete(AbstractFetcher.this.deserialize(getMapper(), body.byteStream()));
+            } catch (Exception e) {
                 LOG.warn("failed to deserialize body of {}", call.request());
                 this.completeExceptionally(e);
             }

@@ -49,7 +49,4 @@ public class UnitDatastructureTest {
         System.out.println(s);
     }
 
-    @Test
-    public void testSerialize() {
-    }
 }
