@@ -9,14 +9,38 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractFetcher<T extends Configured> extends Configured implements Fetchable<T>, Updatable<T>, Deserializable<T>,
         Serializable<T>, Configurable {
 
-    public static final String APPLICATION_JSON_STRING = "application/json; charset=utf-8";
-    public static final MediaType APPLICATION_JSON = MediaType.parse(APPLICATION_JSON_STRING);
+    private static final String APPLICATION_JSON_STRING = "application/json; charset=utf-8";
+    private static final MediaType APPLICATION_JSON = MediaType.parse(APPLICATION_JSON_STRING);
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFetcher.class);
+
+    public Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp) throws IOException {
+        String normalizedId = id.replace(getDomainName() + "/", "");
+        if (normalizedId.startsWith("/")) {
+            normalizedId = normalizedId.substring(1);
+        }
+        HttpUrl url = prefix.resolve("./" + getDomainName() + "/" + normalizedId);
+        if (url == null) {
+            throw new MalformedURLException();
+        }
+        Request.Builder builder = new Request.Builder();
+        return builder.url(url);
+    }
+
+    public Request.Builder getUpdateRequest(HttpUrl prefix, String id) throws IOException {
+        Request.Builder builder = new Request.Builder();
+        HttpUrl url = prefix.resolve("./" + getDomainName() + "/" + id);
+        if (url == null) {
+            throw new MalformedURLException();
+        }
+        return builder.url(url);
+    }
+
 
     @Override
     public T fetch(String id) {
@@ -76,10 +100,7 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
     @Override
     public abstract T deserialize(ObjectMapper mapper, InputStream bytes) throws IOException;
 
-    public abstract Request.Builder getFetchRequest(HttpUrl prefix, String id, Long timestamp) throws IOException;
-
-    public abstract Request.Builder getUpdateRequest(HttpUrl prefix, String id) throws IOException;
-
+    protected abstract String getDomainName();
 
     private final class FetcherCallback extends CompletableFuture<T> implements Callback {
 
