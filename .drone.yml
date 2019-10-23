@@ -79,9 +79,13 @@ steps:
   commands:
   - mvn clean deploy -P ssb-bip, -DskipTests=true --batch-mode --global-settings settings.xml
   when:
-    ref:
-      - refs/heads/develop
-      - refs/tags/*
+    branch:
+      - feature/gsim-process-objects # for now, make it release on push since avro-buddy-lds-gsim is depending on this for new code
+    event:
+      - push
+#    ref:
+#      - refs/heads/develop
+#      - refs/tags/*
   environment:
     MAVEN_HOME: /drone/src/.m2
     M2_HOME: /drone/src/.m2
