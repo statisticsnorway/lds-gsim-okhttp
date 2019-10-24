@@ -15,9 +15,6 @@ public class ProcessExecutionLog extends IdentifiableArtefact {
 
     public static final String PROCESS_EXECUTION_LOG_NAME = "ProcessExecutionLog";
 
-    @JsonProperty
-    private List<Map> codeBlocks;
-
     public static class Fetcher extends AbstractFetcher<ProcessExecutionLog> {
 
         @Override

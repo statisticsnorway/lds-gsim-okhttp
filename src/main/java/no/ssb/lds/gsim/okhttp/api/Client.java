@@ -1,8 +1,14 @@
 package no.ssb.lds.gsim.okhttp.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.ssb.lds.gsim.okhttp.BusinessProcess;
 import no.ssb.lds.gsim.okhttp.InstanceVariable;
 import no.ssb.lds.gsim.okhttp.LogicalRecord;
+import no.ssb.lds.gsim.okhttp.ProcessExecutionLog;
+import no.ssb.lds.gsim.okhttp.ProcessStep;
+import no.ssb.lds.gsim.okhttp.ProcessStepInstance;
+import no.ssb.lds.gsim.okhttp.TransformableInput;
+import no.ssb.lds.gsim.okhttp.TransformedOutput;
 import no.ssb.lds.gsim.okhttp.UnitDataStructure;
 import no.ssb.lds.gsim.okhttp.UnitDataset;
 import okhttp3.HttpUrl;
@@ -40,6 +46,42 @@ public class Client extends Configured {
 
     public CompletableFuture<Void> updateInstanceVariable(String id, InstanceVariable instanceVariable) throws IOException {
         InstanceVariable.Fetcher fetcher = new InstanceVariable.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, instanceVariable);
+    }
+
+    public CompletableFuture<Void> updateBusinessProcess(String id, BusinessProcess instanceVariable) throws IOException {
+        BusinessProcess.Fetcher fetcher = new BusinessProcess.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, instanceVariable);
+    }
+
+    public CompletableFuture<Void> updateProcessStep(String id, ProcessStep processStep) throws IOException {
+        ProcessStep.Fetcher fetcher = new ProcessStep.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, processStep);
+    }
+
+    public CompletableFuture<Void> updateProcessStepInstance(String id, ProcessStepInstance instanceVariable) throws IOException {
+        ProcessStepInstance.Fetcher fetcher = new ProcessStepInstance.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, instanceVariable);
+    }
+
+    public CompletableFuture<Void> updateProcessExecutionLog(String id, ProcessExecutionLog processExecutionLog) throws IOException {
+        ProcessExecutionLog.Fetcher fetcher = new ProcessExecutionLog.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, processExecutionLog);
+    }
+
+    public CompletableFuture<Void> updateTransformableInput(String id, TransformableInput instanceVariable) throws IOException {
+        TransformableInput.Fetcher fetcher = new TransformableInput.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, instanceVariable);
+    }
+
+    public CompletableFuture<Void> updateTransformedOutput(String id, TransformedOutput instanceVariable) throws IOException {
+        TransformedOutput.Fetcher fetcher = new TransformedOutput.Fetcher();
         fetcher.withParametersFrom(this);
         return fetcher.updateAsync(id, instanceVariable);
     }
