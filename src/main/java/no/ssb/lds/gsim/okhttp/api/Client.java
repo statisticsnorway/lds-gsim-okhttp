@@ -7,6 +7,8 @@ import no.ssb.lds.gsim.okhttp.LogicalRecord;
 import no.ssb.lds.gsim.okhttp.ProcessExecutionLog;
 import no.ssb.lds.gsim.okhttp.ProcessStep;
 import no.ssb.lds.gsim.okhttp.ProcessStepInstance;
+import no.ssb.lds.gsim.okhttp.StatisticalProgram;
+import no.ssb.lds.gsim.okhttp.StatisticalProgramCycle;
 import no.ssb.lds.gsim.okhttp.TransformableInput;
 import no.ssb.lds.gsim.okhttp.TransformedOutput;
 import no.ssb.lds.gsim.okhttp.UnitDataStructure;
@@ -48,6 +50,18 @@ public class Client extends Configured {
         InstanceVariable.Fetcher fetcher = new InstanceVariable.Fetcher();
         fetcher.withParametersFrom(this);
         return fetcher.updateAsync(id, instanceVariable);
+    }
+
+    public CompletableFuture<Void> updateStatisticalProgram(String id, StatisticalProgram statisticalProgram) throws IOException {
+        StatisticalProgram.Fetcher fetcher = new StatisticalProgram.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, statisticalProgram);
+    }
+
+    public CompletableFuture<Void> updateStatisticalProgramCycle(String id, StatisticalProgramCycle statisticalProgramCycle) throws IOException {
+        StatisticalProgramCycle.Fetcher fetcher = new StatisticalProgramCycle.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.updateAsync(id, statisticalProgramCycle);
     }
 
     public CompletableFuture<Void> updateBusinessProcess(String id, BusinessProcess instanceVariable) throws IOException {

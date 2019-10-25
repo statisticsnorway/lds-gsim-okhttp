@@ -18,10 +18,6 @@ public class TransformedOutput extends IdentifiableArtefact {
     @JsonProperty
     private String outputId;
 
-    public String getOutputId() {
-        return outputId;
-    }
-
     public void setOutputId(String outputId) {
         this.outputId = outputId;
     }
