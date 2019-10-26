@@ -21,6 +21,10 @@ public class StatisticalProgramCycle extends IdentifiableArtefact {
     @JsonProperty
     private String referencePeriodStart;
 
+    public List<String> getBusinessProcesses() {
+        return businessProcesses;
+    }
+
     @JsonProperty
     private List<String> businessProcesses;
 

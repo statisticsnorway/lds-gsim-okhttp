@@ -58,6 +58,12 @@ public class Client extends Configured {
         return fetcher.updateAsync(id, statisticalProgram);
     }
 
+    public CompletableFuture<StatisticalProgramCycle> fetchStatisticalProgramCycle(String id) {
+        StatisticalProgramCycle.Fetcher fetcher = new StatisticalProgramCycle.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.fetchAsync(id).thenApply(result -> (StatisticalProgramCycle) result.withParametersFrom(this));
+    }
+
     public CompletableFuture<Void> updateStatisticalProgramCycle(String id, StatisticalProgramCycle statisticalProgramCycle) throws IOException {
         StatisticalProgramCycle.Fetcher fetcher = new StatisticalProgramCycle.Fetcher();
         fetcher.withParametersFrom(this);
