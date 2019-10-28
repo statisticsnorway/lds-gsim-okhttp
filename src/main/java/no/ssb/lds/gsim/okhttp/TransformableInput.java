@@ -18,23 +18,12 @@ public class TransformableInput extends IdentifiableArtefact {
     @JsonProperty
     private String inputId;
 
-    @JsonProperty
-    private String inputType;
-
     public String getInputId() {
         return inputId;
     }
 
     public void setInputId(String inputId) {
         this.inputId = inputId;
-    }
-
-    public String getInputType() {
-        return inputType;
-    }
-
-    public void setInputType(String inputType) {
-        this.inputType = inputType;
     }
 
     public static class Fetcher extends AbstractFetcher<TransformableInput> {
