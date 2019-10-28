@@ -17,6 +17,17 @@ public class BusinessProcess extends IdentifiableArtefact {
     @JsonProperty
     private List<String> processSteps;
 
+    @JsonProperty
+    private boolean isPlaceholderProcess;
+
+    public boolean isPlaceholderProcess() {
+        return isPlaceholderProcess;
+    }
+
+    public void setPlaceholderProcess(boolean placeholderProcess) {
+        isPlaceholderProcess = placeholderProcess;
+    }
+
     public List<String> getProcessSteps() {
         return processSteps;
     }
