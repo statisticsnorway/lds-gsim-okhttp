@@ -20,12 +20,12 @@ public class BusinessProcess extends IdentifiableArtefact {
     @JsonProperty
     private boolean isPlaceholderProcess;
 
-    public boolean isPlaceholderProcess() {
-        return isPlaceholderProcess;
+    public boolean hasPlaceholderProcess() {
+        return this.isPlaceholderProcess;
     }
 
     public void setPlaceholderProcess(boolean placeholderProcess) {
-        isPlaceholderProcess = placeholderProcess;
+        this.isPlaceholderProcess = placeholderProcess;
     }
 
     public List<String> getProcessSteps() {
