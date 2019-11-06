@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractFetcher<T extends Configured> extends Configured implements Fetchable<T>, Updatable<T>, Deserializable<T>,
@@ -29,6 +33,11 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
             throw new MalformedURLException();
         }
         Request.Builder builder = new Request.Builder();
+        if (timestamp != null) {
+            ZonedDateTime zonedTimestamp = Instant.ofEpochMilli(timestamp).atZone(ZoneOffset.UTC);
+            String formattedTimeStamp = zonedTimestamp.format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+            url = url.newBuilder().addQueryParameter("timestamp", formattedTimeStamp).build();
+        }
         return builder.url(url);
     }
 
@@ -55,7 +64,7 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
     @Override
     public CompletableFuture<T> fetchAsync(String id, Long timestamp) {
         try {
-            Request.Builder request = getFetchRequest(getPrefix(), id, getTimestamp());
+            Request.Builder request = getFetchRequest(getPrefix(), id, timestamp);
             request.header("Accept", APPLICATION_JSON_STRING);
             Call call = getClient().newCall(request.build());
             FetcherCallback callback = new FetcherCallback();
