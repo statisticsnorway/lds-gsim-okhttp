@@ -1,22 +1,15 @@
 package no.ssb.lds.gsim.okhttp.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kotlin.io.ByteStreamsKt;
 import okhttp3.*;
-import okio.Buffer;
 import okio.ByteString;
-import okio.Utf8;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
-import java.util.Optional;
-import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractFetcher<T extends Configured> extends Configured implements Fetchable<T>, Updatable<T>, Deserializable<T>,
@@ -119,26 +112,10 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) {
             try {
-                if (!response.isSuccessful()) {
-                    String message = "no content";
-                    ResponseBody body = response.body();
-                    Throwable suppressedException = null;
-                    if (body != null) {
-                        try {
-                            message = body.source().readUtf8(1024);
-                        } catch (IOException ioe) {
-                            message = "failed to read content";
-                            suppressedException = ioe;
-                        }
-                    }
-                    IOException ioException = new IOException(String.format("request %s failed: %s",
-                            response, message));
-                    if (suppressedException != null) {
-                        ioException.addSuppressed(suppressedException);
-                    }
-                    throw ioException;
-                }
                 ResponseBody body = response.body();
+                if (!response.isSuccessful()) {
+                    throw createHttpException(response);
+                }
                 if (body == null) {
                     throw new IOException(String.format("request %s was empty", response));
                 }
@@ -147,6 +124,28 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
                 LOG.warn("failed to deserialize body of {}", call.request());
                 this.completeExceptionally(e);
             }
+        }
+
+        private IOException createHttpException(@NotNull Response response) {
+            ResponseBody body = response.body();
+            String message;
+            IOException suppressedException = null;
+            try {
+                if (body != null) {
+                    message = body.source().readUtf8(1024);
+                } else {
+                    message = "no content";
+                }
+            } catch (IOException ioe) {
+                message = "failed to read content";
+                suppressedException = ioe;
+            }
+            IOException ioException = new IOException(String.format("request %s failed: %s",
+                    response, message));
+            if (suppressedException != null) {
+                ioException.addSuppressed(suppressedException);
+            }
+            return ioException;
         }
     }
 }
