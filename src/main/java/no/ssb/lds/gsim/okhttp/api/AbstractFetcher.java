@@ -139,6 +139,9 @@ public abstract class AbstractFetcher<T extends Configured> extends Configured i
                     throw ioException;
                 }
                 ResponseBody body = response.body();
+                if (body == null) {
+                    throw new IOException(String.format("request %s was empty", response));
+                }
                 this.complete(AbstractFetcher.this.deserialize(getMapper(), body.byteStream()));
             } catch (Exception e) {
                 LOG.warn("failed to deserialize body of {}", call.request());
