@@ -28,6 +28,12 @@ public class Client extends Configured {
         return fetcher.fetchAsync(id).thenApply(result -> (UnitDataset) result.withParametersFrom(this));
     }
 
+    public CompletableFuture<BusinessProcess> fetchBusinessProcess(String id) {
+        BusinessProcess.Fetcher fetcher = new BusinessProcess.Fetcher();
+        fetcher.withParametersFrom(this);
+        return fetcher.fetchAsync(id).thenApply(result -> (BusinessProcess) result.withParametersFrom(this));
+    }
+
     public CompletableFuture<Void> updateUnitDataset(String id, UnitDataset dataset) throws IOException {
         UnitDataset.Fetcher fetcher = new UnitDataset.Fetcher();
         fetcher.withParametersFrom(this);
