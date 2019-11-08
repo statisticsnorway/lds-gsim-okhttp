@@ -20,20 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnitDatasetTest {
 
-    private String exampleDataset;
     private MockWebServer server;
 
     @Before
-    public void setUp() throws Exception {
-        Request getExampleDataset = new Request.Builder()
-                .url("https://raw.githubusercontent.com/statisticsnorway/" +
-                        "gsim-raml-schema/master/examples/_main/UnitDataSet_Person_1.json")
-                .build();
-
-        try (Response execute = new OkHttpClient().newCall(getExampleDataset).execute()) {
-            exampleDataset = execute.body().string();
-        }
-
+    public void setUp() {
         server = new MockWebServer();
     }
 
